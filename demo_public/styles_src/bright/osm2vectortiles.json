@@ -1,0 +1,1070 @@
+{
+  "tiles": [
+    "{{{HOST}}}/map/{z}/{x}/{y}.pbf"
+  ],
+  "name": "osm2vectortiles",
+  "format": "pbf",
+  "basename": "osm2vectortiles",
+  "id": "osm2vectortiles",
+  "filesize": 57691346944,
+  "attribution": "<a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\">&copy; OpenStreetMap contributors</a>",
+  "center": [
+    8.5388,
+    47.3434,
+    12
+  ],
+  "description": "Free vector tiles from from http://osm2vectortiles.org",
+  "maxzoom": 14,
+  "minzoom": 0,
+  "mtime": "1463000297761",
+  "bounds": [
+    -180,
+    -85.05112877980659,
+    180,
+    85.0511287798066
+  ],
+  "_prefs": {
+    "disabled": [],
+    "inspector": false,
+    "mapid": "",
+    "rev": "",
+    "saveCenter": true
+  },
+  "Layer": [
+    {
+      "id": "landuse",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(MAX(osm_id), true) AS osm_id, ST_CollectionExtract(ST_Collect(geometry), 3) AS geometry, landuse_class(type) AS class, type\n  FROM (\n    SELECT osm_id, geometry, type\n    FROM landuse_z5toz6\n    WHERE z(!scale_denominator!) BETWEEN 5 AND 6\n    UNION ALL\n    SELECT osm_id, geometry, type\n    FROM landuse_z7toz8\n    WHERE z(!scale_denominator!) BETWEEN 7 AND 8\n  ) AS landuse_z5toz8\n  WHERE geometry && !bbox!\n  GROUP BY type\n  UNION ALL\n  SELECT\n    osm_ids2mbid(osm_id, true) AS osm_id,\n    CASE WHEN ST_Area(geometry) > 10000000\n         THEN ST_Intersection(ST_MakeValid(geometry), !bbox!)\n         ELSE geometry\n    END AS geometry,\n    landuse_class(type) AS class, type\n    FROM (\n      SELECT osm_id, geometry, type\n      FROM landuse_z9\n      WHERE z(!scale_denominator!) = 9\n      UNION ALL\n      SELECT osm_id, geometry, type\n      FROM landuse_z10\n      WHERE z(!scale_denominator!) = 10\n      UNION ALL\n      SELECT osm_id, geometry, type\n      FROM landuse_z11\n      WHERE z(!scale_denominator!) = 11\n      UNION ALL\n      SELECT osm_id, geometry, type\n      FROM landuse_z12\n      WHERE z(!scale_denominator!) = 12\n      UNION ALL\n      SELECT osm_id, geometry, type\n      FROM landuse_z13toz14\n      WHERE z(!scale_denominator!) BETWEEN 13 AND 14\n    ) AS landuse_z9toz14\n    WHERE geometry && !bbox!\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "class": "One of: agriculture, cemetery, glacier, grass, hospital, industrial, park, parking, piste, pitch, rock, sand, school, scrub, wood, aboriginal lands",
+        "type": "OSM tag, more specific than class"
+      },
+      "properties": {
+        "buffer-size": 4,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "landuse"
+    },
+    {
+      "id": "waterway",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, false) AS osm_id, geometry, type, type AS class\n  FROM (\n    SELECT *\n    FROM waterway_z7toz9\n    WHERE z(!scale_denominator!) BETWEEN 7 AND 9\n    UNION ALL\n    SELECT *\n    FROM waterway_z10toz12\n    WHERE z(!scale_denominator!) BETWEEN 10 AND 12\n    UNION ALL\n    SELECT *\n    FROM waterway_z13\n    WHERE z(!scale_denominator!) = 13\n    UNION ALL\n    SELECT *\n    FROM waterway_z14\n    WHERE z(!scale_denominator!) = 14\n  ) AS waterway\n  WHERE geometry && !bbox!\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "class": "One of: river, canal, stream, stream_intermittent, ditch, drain",
+        "type": "One of: river, canal, stream, ditch, drain"
+      },
+      "properties": {
+        "buffer-size": 4,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "waterway"
+    },
+    {
+      "id": "water",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT\n    osm_ids2mbid(osm_id, true) AS osm_id,\n    CASE WHEN ST_Area(geometry) > 10000000 AND osm_id <> 0\n         THEN ST_Intersection(ST_MakeValid(geometry), !bbox!)\n         ELSE geometry\n    END AS geometry\n  FROM (\n    SELECT osm_id, geometry\n    FROM water_z0\n    WHERE z(!scale_denominator!) = 0\n    UNION ALL\n    SELECT osm_id, geometry\n    FROM water_z1\n    WHERE z(!scale_denominator!) = 1\n    UNION ALL\n    SELECT osm_id, geometry\n    FROM water_z2toz3\n    WHERE z(!scale_denominator!) BETWEEN 2 AND 3\n    UNION ALL\n    SELECT osm_id, geometry\n    FROM water_z4\n    WHERE z(!scale_denominator!) = 4\n    UNION ALL\n    SELECT osm_id, geometry\n    FROM water_z5toz7\n    WHERE z(!scale_denominator!) BETWEEN 5 AND 7\n    UNION ALL\n    SELECT osm_id, geometry\n    FROM water_z8toz10\n    WHERE z(!scale_denominator!) BETWEEN 8 AND 10\n    UNION ALL\n    SELECT osm_id, geometry\n    FROM water_z11toz12\n    WHERE z(!scale_denominator!) BETWEEN 11 AND 12\n    UNION ALL\n    SELECT osm_id, geometry\n    FROM water_z13toz14\n    WHERE z(!scale_denominator!) BETWEEN 13 AND 14\n  ) AS water\n  WHERE geometry && !bbox!\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {},
+      "properties": {
+        "buffer-size": 8,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "water"
+    },
+    {
+      "id": "aeroway",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, is_polygon(geometry)) AS osm_id, geometry, type\n  FROM (\n    SELECT *\n    FROM aeroway_z9\n    WHERE z(!scale_denominator!) = 9\n    UNION ALL\n    SELECT *\n    FROM aeroway_z10toz14\n    WHERE z(!scale_denominator!) BETWEEN 10 AND 14\n  ) AS aeroway\n  WHERE geometry && !bbox!\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "type": "One of: runway, taxiway, apron"
+      },
+      "properties": {
+        "buffer-size": 4,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "aeroway"
+    },
+    {
+      "id": "barrier_line",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, is_polygon(geometry)) AS osm_id, geometry, barrier_line_class(type) AS class\n  FROM barrier_line_z14\n  WHERE geometry && !bbox!\n    AND z(!scale_denominator!) = 14\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "class": "One of: fence, hedge, cliff, gate"
+      },
+      "properties": {
+        "buffer-size": 4,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "barrier_line"
+    },
+    {
+      "id": "building",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, geometry, building_is_underground(underground) AS underground\n  FROM (\n    SELECT osm_id, geometry, underground\n    FROM building_z13\n    WHERE z(!scale_denominator!) = 13\n    UNION ALL\n    SELECT osm_id, geometry, underground\n    FROM building_z14\n    WHERE z(!scale_denominator!) = 14\n  ) AS building\n  WHERE geometry && !bbox!\n  ORDER BY ST_YMin(ST_Envelope(geometry)) DESC\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "underground": "Text. Whether building is underground. One of: 'true', 'false'"
+      },
+      "properties": {
+        "buffer-size": 2,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "building"
+    },
+    {
+      "id": "landuse_overlay",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT\n    osm_ids2mbid(osm_id, true) AS osm_id,\n    CASE WHEN ST_Area(geometry) > 10000000\n         THEN ST_Intersection(ST_MakeValid(geometry), !bbox!)\n         ELSE geometry\n    END AS geometry,\n    landuse_overlay_class(type) AS class, type\n  FROM (\n    SELECT osm_id, geometry, type FROM landuse_overlay_z5\n    WHERE z(!scale_denominator!) = 5\n    UNION ALL\n    SELECT osm_id, geometry, type FROM landuse_overlay_z6\n    WHERE z(!scale_denominator!) = 6\n    UNION ALL\n    SELECT osm_id, geometry, type FROM landuse_overlay_z7\n    WHERE z(!scale_denominator!) = 7\n    UNION ALL\n    SELECT osm_id, geometry, type FROM landuse_overlay_z8\n    WHERE z(!scale_denominator!) = 8\n    UNION ALL\n    SELECT osm_id, geometry, type FROM landuse_overlay_z9\n    WHERE z(!scale_denominator!) = 9\n    UNION ALL\n    SELECT osm_id, geometry, type FROM landuse_overlay_z10\n    WHERE z(!scale_denominator!) = 10\n    UNION ALL\n    SELECT osm_id, geometry, type FROM landuse_overlay_z11toz12\n    WHERE z(!scale_denominator!) BETWEEN 11 AND 12\n    UNION ALL\n    SELECT osm_id, geometry, type FROM landuse_overlay_z13toz14\n    WHERE z(!scale_denominator!) BETWEEN 13 AND 14\n  ) AS landuse_overlay\n  WHERE geometry && !bbox!\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "class": "One of: national_park, wetland, wetland_noveg",
+        "type": "OSM tag, more specific than class"
+      },
+      "properties": {
+        "buffer-size": 8,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "landuse_overlay"
+    },
+    {
+      "id": "road",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_id, geometry, type, class, oneway, structure FROM (\n      SELECT osm_ids2mbid(MAX(osm_id), false) AS osm_id, ST_CollectionExtract(ST_Collect(geometry), 2) AS geometry,\n      road_type(road_class(type, NULL, NULL), type, NULL, NULL, NULL) AS type,\n      road_class(type, NULL, NULL) AS class, road_oneway(0) AS oneway, 'none' AS structure, NULL AS z_order\n      FROM (\n        SELECT * FROM road_z5\n        WHERE z(!scale_denominator!) = 5\n        UNION ALL\n        SELECT * FROM road_z6toz7\n        WHERE z(!scale_denominator!) BETWEEN 6 AND 7\n        UNION ALL\n        SELECT * FROM road_z8toz9\n        WHERE z(!scale_denominator!) BETWEEN 8 AND 9\n        UNION ALL\n        SELECT * FROM road_z10\n        WHERE z(!scale_denominator!) = 10\n      ) AS road_grouped_zoom_levels\n      WHERE geometry && !bbox!\n      GROUP BY type\n      UNION ALL\n      SELECT osm_ids2mbid(osm_id, is_polygon(geometry)) AS osm_id, geometry,\n      road_type(road_class(type, service, access), type, construction, tracktype, service) AS type,\n      road_class(type, service, access) AS class, road_oneway(oneway) AS oneway, structure, z_order\n       FROM (\n        SELECT * FROM road_z11\n        WHERE z(!scale_denominator!) = 11\n        UNION ALL\n        SELECT * FROM road_z12\n        WHERE z(!scale_denominator!) = 12\n        UNION ALL\n        SELECT * FROM road_z13\n        WHERE z(!scale_denominator!) = 13\n        UNION ALL\n        SELECT * FROM road_z14\n        WHERE z(!scale_denominator!) = 14\n       ) AS t2\n      WHERE geometry && !bbox!\n      ORDER BY z_order ASC\n   ) AS ordered_roads\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "class": "One of: 'motorway', 'motorway_link', 'trunk', 'primary', 'secondary', 'tertiary', 'link', 'street', 'street_limited', 'pedestrian', 'construction', 'track', 'service', 'ferry', 'path', 'golf'",
+        "oneway": "Text. Whether traffic on the road is one-way. One of: 'true', 'false'",
+        "structure": "Text. One of: 'none', 'bridge', 'tunnel', 'ford'. Available from zoom level 13+.",
+        "type": "In most cases, values will be that of the primary key from OpenStreetMap tags."
+      },
+      "properties": {
+        "buffer-size": 4,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "road"
+    },
+    {
+      "id": "admin",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, false) AS osm_id, geometry, admin_level, disputed, maritime\n  FROM (\n    SELECT osm_id, geometry, admin_level, disputed, maritime\n    FROM admin_z0\n    WHERE z(!scale_denominator!) = 0\n    UNION ALL\n    SELECT osm_id, geometry, admin_level, disputed, maritime\n    FROM admin_z1\n    WHERE z(!scale_denominator!) = 1\n    UNION ALL\n    SELECT osm_id, geometry, admin_level, disputed, maritime\n    FROM admin_z2\n    WHERE z(!scale_denominator!) = 2\n    UNION ALL\n    SELECT osm_id, geometry, admin_level, disputed, maritime\n    FROM admin_z3\n    WHERE z(!scale_denominator!) = 3\n    UNION ALL\n    SELECT osm_id, geometry, admin_level, disputed, maritime\n    FROM admin_z4toz5\n    WHERE z(!scale_denominator!) BETWEEN 4 AND 5\n    UNION ALL\n    SELECT osm_id, geometry, admin_level, disputed, maritime\n    FROM admin_z6\n    WHERE z(!scale_denominator!) = 6\n    UNION ALL\n    SELECT osm_id, geometry, admin_level, disputed, maritime\n    FROM admin_z7toz14\n    WHERE z(!scale_denominator!) BETWEEN 7 AND 14\n  ) AS admin\n  WHERE geometry && !bbox!\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "admin_level": "The OSM administrative level of the boundary",
+        "disputed": "Number. Disputed boundaries are 1, all others are 0.",
+        "maritime": "Number. Maritime boundaries are 1, all others are 0."
+      },
+      "properties": {
+        "buffer-size": 4,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "admin"
+    },
+    {
+      "id": "country_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "wkb_geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, wkb_geometry,\n  iso3166_1_alpha_2 AS code,\n  name,\n  coalesce(NULLIF(name_en, ''), name) AS name_en,\n  coalesce(NULLIF(name_es, ''), name) AS name_es,\n  coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n  coalesce(NULLIF(name_de, ''), name) AS name_de,\n  coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n  coalesce(NULLIF(name_zh, ''), name) AS name_zh, \n  rank AS scalerank\n  FROM custom_countries\n  WHERE (\n    (\n      rank <= 1\n      AND z(!scale_denominator!) = 1 AND wkb_geometry && !bbox!\n    )\n    OR\n    (\n      rank <= 2\n      AND z(!scale_denominator!) >= 2 AND wkb_geometry && !bbox!\n    )\n    OR\n    (\n      rank <= 4\n      AND z(!scale_denominator!) >= 3 AND wkb_geometry && !bbox!\n    )\n    OR\n    (\n      rank <= 5\n      AND z(!scale_denominator!) >= 4 AND wkb_geometry && !bbox!\n    )\n    OR\n    (\n      rank <= 6\n      AND z(!scale_denominator!) >= 5 AND wkb_geometry && !bbox!\n    )\n    OR\n    (\n      rank >= 7\n      AND z(!scale_denominator!) >= 6 AND wkb_geometry && !bbox!\n    )\n  )\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "code": "ISO 3166-1 Alpha-2 code",
+        "name": "Local name of the country",
+        "name_de": "German name of the country",
+        "name_en": "English name of the country",
+        "name_es": "Spanish name of the country",
+        "name_fr": "French name of the country",
+        "name_ru": "Russian name of the country",
+        "name_zh": "Chinese name of the country",
+        "scalerank": "Number, 1-6. Useful for styling text sizes."
+      },
+      "properties": {
+        "buffer-size": 256,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "country_label"
+    },
+    {
+      "id": "marine_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, wkb_geometry,\n  name,\n  coalesce(NULLIF(name_en, ''), name) AS name_en,\n  coalesce(NULLIF(name_es, ''), name) AS name_es,\n  coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n  coalesce(NULLIF(name_de, ''), name) AS name_de,\n  coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n  coalesce(NULLIF(name_zh, ''), name) AS name_zh, \n  case when ST_GeometryType(wkb_geometry) = 'ST_LineString' then 'line'\n       else 'point' end AS placement,\n  rank AS labelrank\n  FROM custom_seas\n  WHERE wkb_geometry && !bbox! AND (\n    (\n      rank = 1 AND z(!scale_denominator!) >= 1\n    )\n    OR (\n      rank = 2 AND z(!scale_denominator!) >= 2\n    )\n    OR (\n      rank = 3 AND z(!scale_denominator!) >= 3\n    )\n    OR (\n      rank = 4 AND z(!scale_denominator!) >= 4\n    )\n    OR (\n      rank = 5 AND z(!scale_denominator!) >= 5\n    )\n    OR (\n      rank = 6 AND z(!scale_denominator!) >= 6\n    )\n  )\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "labelrank": "Number, 1-6. Useful for styling text sizes.",
+        "name": "Local name of the sea",
+        "name_de": "German name of the sea",
+        "name_en": "English name of the sea",
+        "name_es": "Spanish name of the sea",
+        "name_fr": "French name of the sea",
+        "name_ru": "Russian name of the sea",
+        "name_zh": "Chinese name of the sea",
+        "placement": "One of: point, line"
+      },
+      "properties": {
+        "buffer-size": 256,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "marine_label"
+    },
+    {
+      "id": "state_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, wkb_geometry, abbr,\n  area_sqkm AS area,\n  name,\n  coalesce(NULLIF(name_en, ''), name) AS name_en,\n  coalesce(NULLIF(name_es, ''), name) AS name_es,\n  coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n  coalesce(NULLIF(name_de, ''), name) AS name_de,\n  coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n  coalesce(NULLIF(name_zh, ''), name) AS name_zh\n  FROM custom_states\n  WHERE wkb_geometry && !bbox! AND (\n    (\n      area_sqkm > 90000 AND z(!scale_denominator!) >= 4\n    )\n    OR (\n      z(!scale_denominator!) >= 5\n    )\n  )\n) AS states",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "abbr": "Abbreviated state name",
+        "area": "The area of the state in kilometers²",
+        "name": "Local name of the state",
+        "name_de": "German name of the state",
+        "name_en": "English name of the state",
+        "name_es": "Spanish name of the state",
+        "name_fr": "French name of the state",
+        "name_ru": "Russian name of the state",
+        "name_zh": "Chinese name of the state"
+      },
+      "properties": {
+        "buffer-size": 256,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "state_label"
+    },
+    {
+      "id": "place_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "( SELECT * FROM (\n    SELECT osm_ids2mbid(osm_id, true) as osm_id, topoint(geometry) AS geometry,\n    name,\n    coalesce(NULLIF(name_en, ''), name) AS name_en,\n    coalesce(NULLIF(name_es, ''), name) AS name_es,\n    coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n    coalesce(NULLIF(name_de, ''), name) AS name_de,\n    coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n    coalesce(NULLIF(name_zh, ''), name) AS name_zh,\n    type,\n    capital,\n    NULL AS ldir,\n    normalize_scalerank(scalerank) AS scalerank,\n    row_number() OVER (PARTITION BY LabelGrid(geometry, 85 * !pixel_width!)\n                 ORDER BY scalerank ASC NULLS LAST,\n                          population DESC NULLS LAST\n    ) AS localrank\n    FROM (\n        SELECT * FROM place_label_z3\n        WHERE z(!scale_denominator!) = 3\n        UNION ALL\n        SELECT * FROM place_label_z4\n        WHERE z(!scale_denominator!) = 4\n        UNION ALL\n        SELECT * FROM place_label_z5\n        WHERE z(!scale_denominator!) = 5\n        UNION ALL\n        SELECT * FROM place_label_z6toz7\n        WHERE z(!scale_denominator!) BETWEEN 6 AND 7\n        UNION ALL\n        SELECT * FROM place_label_z8\n        WHERE z(!scale_denominator!) = 8\n        UNION ALL\n        SELECT * FROM place_label_z9\n        WHERE z(!scale_denominator!) = 9\n        UNION ALL\n        SELECT * FROM place_label_z10\n        WHERE z(!scale_denominator!) = 10\n        UNION ALL\n        SELECT * FROM place_label_z11toz12\n        WHERE z(!scale_denominator!) BETWEEN 11 AND 12\n        UNION ALL\n        SELECT * FROM place_label_z13\n        WHERE z(!scale_denominator!) = 13\n        UNION ALL\n        SELECT * FROM place_label_z14\n        WHERE z(!scale_denominator!) = 14\n      ) AS place_label\n    WHERE geometry && !bbox!\n    ORDER BY population DESC NULLS LAST\n) AS t WHERE z(!scale_denominator!) >= 11\n          OR (z(!scale_denominator!) = 10 AND localrank < 6)\n          OR (z(!scale_denominator!) = 9 AND localrank < 8)\n          OR (z(!scale_denominator!) = 8 AND localrank < 12)\n          OR (z(!scale_denominator!) = 7 AND localrank < 12)\n          OR (z(!scale_denominator!) = 6 AND localrank < 8)\n          OR z(!scale_denominator!) <= 5\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "capital": "Admin level the city is a capital of, if any. One of: 2, 3, 4, 5, 6, null",
+        "ldir": "A hint for label placement at low zoom levels. One of: N, E, S, W, NE, SE, SW, NW, null",
+        "localrank": "Number. Priority relative to nearby places. Useful for limiting label density.",
+        "name": "Local name of the place",
+        "name_de": "German name of the place",
+        "name_en": "English name of the place",
+        "name_es": "Spanish name of the place",
+        "name_fr": "French name of the place",
+        "name_ru": "Russian name of the place",
+        "name_zh": "Chinese name of the place",
+        "scalerank": "Number, 0-9 or null. Useful for styling text & marker sizes.",
+        "type": "One of: city, town, village, hamlet, suburb, neighbourhood, island, islet, archipelago, residential, aboriginal_lands"
+      },
+      "properties": {
+        "buffer-size": 128,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "place_label"
+    },
+    {
+      "id": "water_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, geometry AS geometry,\n  name,\n  area,\n  coalesce(NULLIF(name_en, ''), name) AS name_en,\n  coalesce(NULLIF(name_es, ''), name) AS name_es,\n  coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n  coalesce(NULLIF(name_de, ''), name) AS name_de,\n  coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n  coalesce(NULLIF(name_zh, ''), name) AS name_zh\n  FROM (\n    SELECT * FROM water_label_z10\n    WHERE z(!scale_denominator!) = 10\n    UNION ALL\n    SELECT * FROM water_label_z11\n    WHERE z(!scale_denominator!) = 11\n    UNION ALL\n    SELECT * FROM water_label_z12\n    WHERE z(!scale_denominator!) = 12\n    UNION ALL\n    SELECT * FROM water_label_z13\n    WHERE z(!scale_denominator!) = 13\n    UNION ALL\n    SELECT * FROM water_label_z14\n    WHERE z(!scale_denominator!) = 14\n  ) AS water_label\n  WHERE geometry && !bbox!\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "area": "The area of the water polygon in Mercator meters²",
+        "name": "Local name of the water body",
+        "name_de": "German name of the water body",
+        "name_en": "English name of the water body",
+        "name_es": "Spanish name of the water body",
+        "name_fr": "French name of the water body",
+        "name_ru": "Russian name of the water body",
+        "name_zh": "Chinese name of the water body"
+      },
+      "properties": {
+        "buffer-size": 64,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "water_label"
+    },
+    {
+      "id": "poi_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, topoint(geometry) AS geometry, ref, name,\n      coalesce(NULLIF(name_en, ''), name) AS name_en,\n      coalesce(NULLIF(name_es, ''), name) AS name_es,\n      coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n      coalesce(NULLIF(name_de, ''), name) AS name_de,\n      coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n      coalesce(NULLIF(name_zh, ''), name) AS name_zh,\n      format_type(type) AS type,\n      poi_label_scalerank(type, area) AS scalerank,\n      coalesce(NULLIF(maki_label_class(type), ''), 'marker') AS maki,\n      rank() OVER (PARTITION BY LabelGrid(geometry, 128 * !pixel_width!)\n                   ORDER BY poi_label_localrank(type) ASC) AS localrank\n    FROM poi_label_z14\n    WHERE z(!scale_denominator!) = 14\n      AND geometry && !bbox!\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "localrank": "Number. Priority relative to nearby POIs. Useful for limiting label density.",
+        "maki": "The name of the Maki icon that should be used for the POI",
+        "name": "Local name of the POI",
+        "name_de": "German name of the POI",
+        "name_en": "English name of the POI",
+        "name_es": "Spanish name of the POI",
+        "name_fr": "French name of the POI",
+        "name_ru": "Russian name of the POI",
+        "name_zh": "Chinese name of the POI",
+        "ref": "Short reference code, if any",
+        "scalerank": "Number. 1-5. Useful for styling icon sizes and minimum zoom levels.",
+        "type": "The original OSM tag value"
+      },
+      "properties": {
+        "buffer-size": 64,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "poi_label"
+    },
+    {
+      "id": "road_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT * FROM\n  (\n  SELECT osm_ids2mbid(osm_id, false) AS osm_id,\n    CASE WHEN z(!scale_denominator!) < 11\n         THEN st_startpoint(geometry)\n         ELSE geometry\n    END AS geometry,\n    name,\n    coalesce(NULLIF(name_en, ''), name) AS name_en,\n    coalesce(NULLIF(name_es, ''), name) AS name_es,\n    coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n    coalesce(NULLIF(name_de, ''), name) AS name_de,\n    coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n    coalesce(NULLIF(name_zh, ''), name) AS name_zh,\n    nullif(ref, '') AS ref,\n    nullif(char_length(ref), 0) AS reflen,\n    round(MercLength(geometry)) AS len,\n    road_class(type, service, access) AS class,\n    'default' AS shield,\n    rank() OVER (\n        PARTITION BY LabelGrid(geometry, (CASE WHEN z(!scale_denominator!) >= 11\n                                               THEN 300\n                                               ELSE 200 \n                                           END) * !pixel_width!)\n        ORDER BY road_localrank(type) ASC, round(MercLength(geometry)) DESC\n    ) AS localrank\n    FROM (\n      SELECT * FROM road_label_z8toz10\n      WHERE z(!scale_denominator!) BETWEEN 8 AND 10\n      UNION ALL\n      SELECT * FROM road_label_z11\n      WHERE z(!scale_denominator!) = 11\n      UNION ALL\n      SELECT * FROM road_label_z12toz13\n      WHERE z(!scale_denominator!) BETWEEN 12 AND 13\n      UNION ALL\n      SELECT * FROM road_label_z14\n      WHERE z(!scale_denominator!) = 14\n    ) AS road_label\n    WHERE geometry && !bbox!\n      AND ST_GeometryType(geometry) = 'ST_LineString'\n  ) AS t1\n  WHERE (z(!scale_denominator!) BETWEEN 8 AND 10 AND localrank < 2)\n     OR (z(!scale_denominator!) BETWEEN 11 AND 12 AND localrank < 5)\n     OR (z(!scale_denominator!) BETWEEN 13 AND 14)\n) AS t2",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "class": "One of: motorway, motorway_link, 'trunk', 'primary', 'secondary', 'tertiary', 'link', 'street', 'street_limited', 'pedestrian', 'construction', 'track', 'service', 'ferry', 'path', 'golf'",
+        "len": "Number. Approximate length of the road segment in Mercator meters.",
+        "localrank": "Number. Used for shield points only. Priority relative to nearby shields. Useful for limiting shield density.",
+        "name": "Local name of the road",
+        "name_de": "German name of the road",
+        "name_en": "English name of the road",
+        "name_es": "Spanish name of the road",
+        "name_fr": "French name of the road",
+        "name_ru": "Russian name of the road",
+        "name_zh": "Chinese name of the road",
+        "ref": "Route number of the road",
+        "reflen": "Number. How many characters long the ref tag is. Useful for shield styling.",
+        "shield": "The shield style to use. One of: default, mx-federal, mx-state, us-highway, us-highway-alternate, us-highway-business, us-highway-duplex, us-interstate, us-interstate-business, us-interstate-duplex, us-interstate-truck, us-state"
+      },
+      "properties": {
+        "buffer-size": 8,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "road_label"
+    },
+    {
+      "id": "waterway_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, false) AS osm_id, geometry, name,\n  coalesce(NULLIF(name_en, ''), name) AS name_en,\n  coalesce(NULLIF(name_es, ''), name) AS name_es,\n  coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n  coalesce(NULLIF(name_de, ''), name) AS name_de,\n  coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n  coalesce(NULLIF(name_zh, ''), name) AS name_zh,\n  type, type AS class\n  FROM (\n    SELECT * FROM waterway_label_z13\n    WHERE z(!scale_denominator!) = 13\n    UNION ALL\n    SELECT * FROM waterway_label_z14\n    WHERE z(!scale_denominator!) = 14\n  ) AS waterway_label\n  WHERE geometry && !bbox!\n  AND linelabel(z(!scale_denominator!), name, geometry)\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "class": "One of: river, canal, stream, stream_intermittent",
+        "name": "Local name of the waterway",
+        "name_de": "German name of the waterway",
+        "name_en": "English name of the waterway",
+        "name_es": "Spanish name of the waterway",
+        "name_fr": "French name of the waterway",
+        "name_ru": "Russian name of the waterway",
+        "name_zh": "Chinese name of the waterway",
+        "type": "One of: river, canal, stream"
+      },
+      "properties": {
+        "buffer-size": 8,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "waterway_label"
+    },
+    {
+      "id": "airport_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, topoint(geometry) AS geometry,\n  name,\n  coalesce(NULLIF(name_en, ''), name) AS name_en,\n  coalesce(NULLIF(name_es, ''), name) AS name_es,\n  coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n  coalesce(NULLIF(name_de, ''), name) AS name_de,\n  coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n  coalesce(NULLIF(name_zh, ''), name) AS name_zh,\n  coalesce(NULLIF(iata, ''), NULLIF(ref, ''), NULLIF(icao, ''), faa) AS ref,\n  airport_label_class(kind, type) AS maki,\n  airport_label_scalerank(airport_label_class(kind, type), area, aerodrome) AS scalerank\n  FROM airport_label_z9toz14\n  WHERE geometry && !bbox!\n  AND z(!scale_denominator!) BETWEEN 9 AND 14\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "maki": "One of: airport, airfield, heliport, rocket",
+        "name": "Local name of the airport",
+        "name_de": "German name of the airport",
+        "name_en": "English name of the airport",
+        "name_es": "Spanish name of the airport",
+        "name_fr": "French name of the airport",
+        "name_ru": "Russian name of the airport",
+        "name_zh": "Chinese name of the airport",
+        "ref": "A 3-4 character IATA, FAA, ICAO, or other reference code",
+        "scalerank": "Number 1-4. Useful for styling icon sizes."
+      },
+      "properties": {
+        "buffer-size": 64,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "airport_label"
+    },
+    {
+      "id": "rail_station_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "geometry",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, geometry,\n  name,\n  coalesce(NULLIF(name_en, ''), name) AS name_en,\n  coalesce(NULLIF(name_es, ''), name) AS name_es,\n  coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n  coalesce(NULLIF(name_de, ''), name) AS name_de,\n  coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n  coalesce(NULLIF(name_zh, ''), name) AS name_zh,\n  rail_station_class(type) AS maki,\n  rail_station_class(type) AS network\n  FROM (\n    SELECT * FROM rail_station_label_z13\n    WHERE z(!scale_denominator!) = 13\n    UNION ALL\n    SELECT * FROM rail_station_label_z14\n    WHERE z(!scale_denominator!) = 14\n  ) AS t\n  WHERE geometry && !bbox!\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "maki": "One of: rail, rail-metro, rail-light, entrance",
+        "name": "Local name of the rail station",
+        "name_de": "German name of the rail station",
+        "name_en": "English name of the rail station",
+        "name_es": "Spanish name of the rail station",
+        "name_fr": "French name of the rail station",
+        "name_ru": "Russian name of the rail station",
+        "name_zh": "Chinese name of the rail station",
+        "network": "The network(s) that the station serves. Useful for icon styling."
+      },
+      "properties": {
+        "buffer-size": 64,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "rail_station_label"
+    },
+    {
+      "id": "mountain_peak_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, geometry,\n  meter_to_feet(elevation_m) AS elevation_ft,\n  elevation_m,\n  mountain_peak_type(type) AS maki,\n  name,\n  coalesce(NULLIF(name_en, ''), name) AS name_en,\n  coalesce(NULLIF(name_es, ''), name) AS name_es,\n  coalesce(NULLIF(name_fr, ''), name) AS name_fr,\n  coalesce(NULLIF(name_de, ''), name) AS name_de,\n  coalesce(NULLIF(name_ru, ''), name) AS name_ru,\n  coalesce(NULLIF(name_zh, ''), name) AS name_zh\n  FROM mountain_peak_label_z12toz14\n  WHERE geometry && !bbox!\n    AND z(!scale_denominator!) BETWEEN 12 AND 14\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "elevation_ft": "Integer elevation in feet",
+        "elevation_m": "Integer elevation in meters",
+        "maki": "One of: 'mountain', 'volcano'",
+        "name": "Local name of the mountain peak",
+        "name_de": "German name of the mountain peak",
+        "name_en": "English name of the mountain peak",
+        "name_es": "Spanish name of the mountain peak",
+        "name_fr": "French name of the mountain peak",
+        "name_ru": "Russian name of the mountain peak",
+        "name_zh": "Chinese name of the mountain peak"
+      },
+      "properties": {
+        "buffer-size": 64,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "mountain_peak_label"
+    },
+    {
+      "id": "housenum_label",
+      "Datasource": {
+        "dbname": "osm",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "geometry_field": "",
+        "geometry_table": "",
+        "host": "172.17.0.4",
+        "key_field": "osm_id",
+        "key_field_as_attribute": false,
+        "max_size": 512,
+        "password": "osm",
+        "port": "5432",
+        "srid": "",
+        "table": "(\n  SELECT osm_ids2mbid(osm_id, true) AS osm_id, topoint(geometry) AS geometry, house_num\n  FROM housenum_label_z14\n  WHERE geometry && !bbox!\n    AND z(!scale_denominator!) = 14\n) AS data",
+        "type": "postgis",
+        "user": "osm"
+      },
+      "description": "",
+      "fields": {
+        "house_num": "House number"
+      },
+      "properties": {
+        "buffer-size": 64,
+        "minzoom": 0,
+        "maxzoom": 22
+      },
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "name": "housenum_label"
+    }
+  ],
+  "vector_layers": [
+    {
+      "id": "landuse",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "class": "One of: agriculture, cemetery, glacier, grass, hospital, industrial, park, parking, piste, pitch, rock, sand, school, scrub, wood, aboriginal lands",
+        "type": "OSM tag, more specific than class"
+      }
+    },
+    {
+      "id": "waterway",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "type": "One of: river, canal, stream, ditch, drain",
+        "class": "One of: river, canal, stream, stream_intermittent, ditch, drain"
+      }
+    },
+    {
+      "id": "water",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {}
+    },
+    {
+      "id": "aeroway",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "type": "One of: runway, taxiway, apron"
+      }
+    },
+    {
+      "id": "barrier_line",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "class": "One of: fence, hedge, cliff, gate"
+      }
+    },
+    {
+      "id": "building",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "underground": "Text. Whether building is underground. One of: 'true', 'false'"
+      }
+    },
+    {
+      "id": "landuse_overlay",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "class": "One of: national_park, wetland, wetland_noveg",
+        "type": "OSM tag, more specific than class"
+      }
+    },
+    {
+      "id": "road",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "type": "In most cases, values will be that of the primary key from OpenStreetMap tags.",
+        "class": "One of: 'motorway', 'motorway_link', 'trunk', 'primary', 'secondary', 'tertiary', 'link', 'street', 'street_limited', 'pedestrian', 'construction', 'track', 'service', 'ferry', 'path', 'golf'",
+        "oneway": "Text. Whether traffic on the road is one-way. One of: 'true', 'false'",
+        "structure": "Text. One of: 'none', 'bridge', 'tunnel', 'ford'. Available from zoom level 13+."
+      }
+    },
+    {
+      "id": "admin",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "admin_level": "The OSM administrative level of the boundary",
+        "disputed": "Number. Disputed boundaries are 1, all others are 0.",
+        "maritime": "Number. Maritime boundaries are 1, all others are 0."
+      }
+    },
+    {
+      "id": "country_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "code": "ISO 3166-1 Alpha-2 code",
+        "name": "Local name of the country",
+        "name_en": "English name of the country",
+        "name_es": "Spanish name of the country",
+        "name_fr": "French name of the country",
+        "name_de": "German name of the country",
+        "name_ru": "Russian name of the country",
+        "name_zh": "Chinese name of the country",
+        "scalerank": "Number, 1-6. Useful for styling text sizes."
+      }
+    },
+    {
+      "id": "marine_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "name": "Local name of the sea",
+        "name_en": "English name of the sea",
+        "name_es": "Spanish name of the sea",
+        "name_fr": "French name of the sea",
+        "name_de": "German name of the sea",
+        "name_ru": "Russian name of the sea",
+        "name_zh": "Chinese name of the sea",
+        "placement": "One of: point, line",
+        "labelrank": "Number, 1-6. Useful for styling text sizes."
+      }
+    },
+    {
+      "id": "state_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "abbr": "Abbreviated state name",
+        "area": "The area of the state in kilometers²",
+        "name": "Local name of the state",
+        "name_en": "English name of the state",
+        "name_es": "Spanish name of the state",
+        "name_fr": "French name of the state",
+        "name_de": "German name of the state",
+        "name_ru": "Russian name of the state",
+        "name_zh": "Chinese name of the state"
+      }
+    },
+    {
+      "id": "place_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "name": "Local name of the place",
+        "name_en": "English name of the place",
+        "name_es": "Spanish name of the place",
+        "name_fr": "French name of the place",
+        "name_de": "German name of the place",
+        "name_ru": "Russian name of the place",
+        "name_zh": "Chinese name of the place",
+        "type": "One of: city, town, village, hamlet, suburb, neighbourhood, island, islet, archipelago, residential, aboriginal_lands",
+        "capital": "Admin level the city is a capital of, if any. One of: 2, 3, 4, 5, 6, null",
+        "ldir": "A hint for label placement at low zoom levels. One of: N, E, S, W, NE, SE, SW, NW, null",
+        "scalerank": "Number, 0-9 or null. Useful for styling text & marker sizes.",
+        "localrank": "Number. Priority relative to nearby places. Useful for limiting label density."
+      }
+    },
+    {
+      "id": "water_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "name": "Local name of the water body",
+        "area": "The area of the water polygon in Mercator meters²",
+        "name_en": "English name of the water body",
+        "name_es": "Spanish name of the water body",
+        "name_fr": "French name of the water body",
+        "name_de": "German name of the water body",
+        "name_ru": "Russian name of the water body",
+        "name_zh": "Chinese name of the water body"
+      }
+    },
+    {
+      "id": "poi_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "ref": "Short reference code, if any",
+        "name": "Local name of the POI",
+        "name_en": "English name of the POI",
+        "name_es": "Spanish name of the POI",
+        "name_fr": "French name of the POI",
+        "name_de": "German name of the POI",
+        "name_ru": "Russian name of the POI",
+        "name_zh": "Chinese name of the POI",
+        "type": "The original OSM tag value",
+        "scalerank": "Number. 1-5. Useful for styling icon sizes and minimum zoom levels.",
+        "maki": "The name of the Maki icon that should be used for the POI",
+        "localrank": "Number. Priority relative to nearby POIs. Useful for limiting label density."
+      }
+    },
+    {
+      "id": "road_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "name": "Local name of the road",
+        "name_en": "English name of the road",
+        "name_es": "Spanish name of the road",
+        "name_fr": "French name of the road",
+        "name_de": "German name of the road",
+        "name_ru": "Russian name of the road",
+        "name_zh": "Chinese name of the road",
+        "ref": "Route number of the road",
+        "reflen": "Number. How many characters long the ref tag is. Useful for shield styling.",
+        "len": "Number. Approximate length of the road segment in Mercator meters.",
+        "class": "One of: motorway, motorway_link, 'trunk', 'primary', 'secondary', 'tertiary', 'link', 'street', 'street_limited', 'pedestrian', 'construction', 'track', 'service', 'ferry', 'path', 'golf'",
+        "shield": "The shield style to use. One of: default, mx-federal, mx-state, us-highway, us-highway-alternate, us-highway-business, us-highway-duplex, us-interstate, us-interstate-business, us-interstate-duplex, us-interstate-truck, us-state",
+        "localrank": "Number. Used for shield points only. Priority relative to nearby shields. Useful for limiting shield density."
+      }
+    },
+    {
+      "id": "waterway_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "name": "Local name of the waterway",
+        "name_en": "English name of the waterway",
+        "name_es": "Spanish name of the waterway",
+        "name_fr": "French name of the waterway",
+        "name_de": "German name of the waterway",
+        "name_ru": "Russian name of the waterway",
+        "name_zh": "Chinese name of the waterway",
+        "type": "One of: river, canal, stream",
+        "class": "One of: river, canal, stream, stream_intermittent"
+      }
+    },
+    {
+      "id": "airport_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "name": "Local name of the airport",
+        "name_en": "English name of the airport",
+        "name_es": "Spanish name of the airport",
+        "name_fr": "French name of the airport",
+        "name_de": "German name of the airport",
+        "name_ru": "Russian name of the airport",
+        "name_zh": "Chinese name of the airport",
+        "ref": "A 3-4 character IATA, FAA, ICAO, or other reference code",
+        "maki": "One of: airport, airfield, heliport, rocket",
+        "scalerank": "Number 1-4. Useful for styling icon sizes."
+      }
+    },
+    {
+      "id": "rail_station_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "name": "Local name of the rail station",
+        "name_en": "English name of the rail station",
+        "name_es": "Spanish name of the rail station",
+        "name_fr": "French name of the rail station",
+        "name_de": "German name of the rail station",
+        "name_ru": "Russian name of the rail station",
+        "name_zh": "Chinese name of the rail station",
+        "maki": "One of: rail, rail-metro, rail-light, entrance",
+        "network": "The network(s) that the station serves. Useful for icon styling."
+      }
+    },
+    {
+      "id": "mountain_peak_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "elevation_ft": "Integer elevation in feet",
+        "elevation_m": "Integer elevation in meters",
+        "maki": "One of: 'mountain', 'volcano'",
+        "name": "Local name of the mountain peak",
+        "name_en": "English name of the mountain peak",
+        "name_es": "Spanish name of the mountain peak",
+        "name_fr": "French name of the mountain peak",
+        "name_de": "German name of the mountain peak",
+        "name_ru": "Russian name of the mountain peak",
+        "name_zh": "Chinese name of the mountain peak"
+      }
+    },
+    {
+      "id": "housenum_label",
+      "description": "",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "fields": {
+        "house_num": "House number"
+      }
+    }
+  ],
+  "maskLevel": "8",
+  "type": "baselayer",
+  "version": "2",
+  "tilejson": "2.0.0"
+}
