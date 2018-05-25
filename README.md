@@ -17,7 +17,7 @@ run :
 ```sh
 $ ./set_go_path.sh
 ```
-export your GOPATH as displayd, then :
+export your GOPATH as displayed, then :
 ```sh
 $ go build
 ```
@@ -29,6 +29,9 @@ You need an mbtiles file and the associated style.
 The easy way is to download vectortile from openmaptile : download [andorra for exemple](https://openmaptiles.com/downloads/dataset/osm/europe/andorra/#10.14/42.5425/1.5999).  
 You can also generate your own vector tile with [openmaptile](https://github.com/openmaptiles/openmaptiles) or [tippecanoe](https://github.com/mapbox/tippecanoe)
 
+If you want to use Open Sans font are ready to use as pbf : just decompress "demo_public/fonts/open sans ressource.7z".  
+Look at demo_public/fonts/Readme.md to see how to generate your own.
+
 Put your mbtiles file somewhere and run :
 ```sh
 $ ./gomtileserver -mbtiles path/to/your/file.mbtiles
@@ -36,5 +39,5 @@ $ ./gomtileserver -mbtiles path/to/your/file.mbtiles
 
 By default style [osm-bright](https://github.com/openmaptiles/osm-bright-gl-style) is used. To change it you need to change the path "style" in demo_public/index.html
 
-For ease gomtileserver transform style in demo_public/style_src/bright and generate one with current server IP (by changing the {{{HOST}}} value).
+For ease gomtileserver transform style in demo_public/style_src/bright and generate one with current server IP (by changing the {{{HOST}}} value).  
 TODO: do it better or allow to overwrite the HOST
